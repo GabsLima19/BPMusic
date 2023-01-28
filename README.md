@@ -15,8 +15,7 @@ O aplicativo também possui player de música para a reprodução da música e u
 
 ## Tecnologias
 - Python
-- Kivy Framework
+- Kivy, Kivy MD Frameworks
+- Python package Librosa
 
 <br>
-
-## Autores
