@@ -19,3 +19,8 @@ O aplicativo também possui player de música para a reprodução da música e u
 - Librosa python package
 
 <br>
+
+## Autores
+|[![](https://avatars.githubusercontent.com/u/49871125?size=130)](https://github.com/GabsLima19)|[![](https://avatars.githubusercontent.com/u/52462313?size=130)](https://github.com/JulianaLemosSa)|
+|----|----|
+|[@Gabriel Francisco](https://github.com/GabsLima19)|[@Isabele Moreira](https://github.com/JulianaLemosSa)|
