@@ -1,0 +1,427 @@
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+
+GerenciarTelas:
+    TelaCarregamento:
+        name: 'tela1'
+    TelaInicial:
+        name: 'tela2'
+    TelaMetronomo:
+        name: 'tela3'
+    TelaConfig:
+        name: 'tela4'
+    TelaAjuda:
+        name: 'tela5'
+    TelaSobre:
+        name: 'tela6'
+
+<TelaCarregamento>
+    MDScreen:
+        MDBoxLayout:
+            padding: 50
+            spacing: 20
+            orientation: "vertical"   
+            md_bg_color: get_color_from_hex("#1C1C1C")
+            #101152
+
+            Image:
+                source: 'logo-oficial.png' 
+                size: self.texture_size
+
+            MDSpinner:
+                size_hint: None, None
+                size: dp(48), dp(48)
+                pos_hint: {'center_x': .5, 'center_y': .5}
+                determinate: True
+                determinate_time: 5
+                on_determinate_complete: root.manager.current = 'tela2'
+                on_determinate_complete: root.verificaraudio()
+                color: get_color_from_hex("#00FFFF")
+
+<TelaInicial>
+    MDNavigationLayout:
+        ScreenManager:
+            MDScreen:
+                MDBoxLayout:
+                    orientation: "vertical"
+                    md_bg_color: get_color_from_hex("#B7B7B7")
+
+                    MDToolbar:
+                        title: "BPMusic"       
+                        md_bg_color: get_color_from_hex("#051046")
+                        left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
+                        right_action_items: [["metronome", lambda _: setattr(root.manager, 'current', 'tela3')]]
+                        specific_text_color: get_color_from_hex("#FFFFFF")
+            
+                    MDBoxLayout:
+                        canvas.before:
+                            Color:
+                                rgba: (0,0,0,1)
+                            Line:
+                                width: 0.2
+                                rectangle: (self.x, self.y, self.width, self.height)
+
+                        orientation: "vertical"
+                        spacing: 15
+                        padding: 30
+
+                        MDTextField:
+                            id: link
+                            hint_text: "URL"
+                            mode: "rectangle"
+                            icon_right: "youtube"
+                            icon_right_color: get_color_from_hex("#FF0000") 
+                            current_hint_text_color: get_color_from_hex("#000000")
+                            line_color_focus: get_color_from_hex("#FF0000")
+                            
+                            
+                        MDFillRoundFlatIconButton:
+                            icon: "upload"
+                            text: "AUDIO"
+                            pos_hint: {"center_x": .5, "center_y": .5}
+                            theme_text_color: "Custom" 
+                            text_color: get_color_from_hex("#000000")
+                            icon_color: get_color_from_hex("#FFFFFF")
+                            md_bg_color: get_color_from_hex("#051046") 
+                            on_press: root.verificaraudio()
+                            on_release: root.importarvideo()
+                            
+
+                    BoxLayout:
+                        padding: 20
+                        spacing: 20
+                        orientation: "vertical"
+
+                        Label: 
+                            text: "BPM"
+                            bold: True
+                            color: get_color_from_hex("#000000")
+                            font_size: 18
+
+                        BoxLayout:
+                            spacing: 20
+                            MDToolbar:
+                                id: selection_path
+                                title: "000" 
+                                left_action_items: [["music-note-quarter", lambda x: x]]
+                                right_action_items: [["poll", lambda x: x]]
+                                specific_text_color: 0,0,0
+                                md_bg_color: get_color_from_hex("#D3D3D3")
+
+                            MDFloatingActionButton:
+                                icon: "metronome"
+                                md_bg_color: get_color_from_hex("#051046") 
+                                on_press: root.analisarbpm()
+                        
+                    MDBoxLayout:
+                        orientation: "vertical"
+                        
+                        spacing: 20
+                        padding: 18
+                        border_radius: [20,]
+
+                        canvas.before:
+                            Color: 
+                                rgba: get_color_from_hex("#D3D3D3")
+                            Rectangle:
+                                size: self.size
+                                pos: self.pos
+
+                        Label: 
+                            id: titulo_video
+                            text: "                    ------------------"
+                            bold: True
+                            color: [0,0,0] 
+                            font_size: 16
+                            text_size: (self.width - sp(10), None)
+
+                        MDProgressBar:
+                            id: progress_bar
+                            pos: 90, 200
+                            min: 0
+                            max: root.length
+                            value: root.progress
+                            color: get_color_from_hex("#051046")
+
+                        MDBoxLayout:
+                            MDIconButton:
+                                icon: ''
+                            MDIconButton:
+                                icon: 'pause'
+                                user_font_size: 35
+                            MDIconButton:
+                                icon: 'play'
+                                user_font_size: 35
+                                on_press: root.play_music()                    
+                            MDIconButton:
+                                icon: 'stop'
+                                user_font_size: 35
+                                on_press: root.des_audio()
+                            MDIconButton:
+                                icon: ''
+
+                    Label:
+                        size_hint: (None, None)
+
+        MDNavigationDrawer:
+            id: nav_drawer
+            md_bg_color: get_color_from_hex("#1C1C1C")
+            padding: 20
+
+            ContentNavigationDrawer:
+                MDBoxLayout:
+                    orientation: "vertical"
+
+                    Image:
+                        source: "logo-oficial.png"
+
+                    Label:
+
+                    MDRectangleFlatIconButton:
+                        icon: "cog-outline"
+                        text: "Configurações"
+                        line_color: get_color_from_hex("#1C1C1C")
+                        text_color: get_color_from_hex("#FFFFFF")
+                        icon_color: get_color_from_hex("#FFFFFF")
+                        on_release: root.manager.current = 'tela4'
+
+                    MDRectangleFlatIconButton:
+                        icon: "help-circle-outline"
+                        text: "Ajuda"
+                        line_color: get_color_from_hex("#1C1C1C")
+                        text_color: get_color_from_hex("#FFFFFF")
+                        icon_color: get_color_from_hex("#FFFFFF")
+                        on_release: root.manager.current = 'tela5'
+
+                    MDRectangleFlatIconButton:
+                        icon: "information-outline"
+                        text: "Sobre"
+                        line_color: get_color_from_hex("#1C1C1C")
+                        text_color: get_color_from_hex("#FFFFFF")
+                        icon_color: get_color_from_hex("#FFFFFF")
+                        on_release: root.manager.current = 'tela6'
+
+                    Label:
+                    Label:
+                    Label:
+
+                    MDLabel:
+                        text: "©BPMusic"
+                        theme_text_color: "Custom"
+                        text_color: get_color_from_hex("#FFFFFF")
+                        font_size: 14
+
+                    MDRectangleFlatIconButton:
+                        icon: "close"
+                        text: "SAIR"
+                        line_color: get_color_from_hex("#1C1C1C")
+                        text_color: get_color_from_hex("#FFFFFF")
+                        icon_color: get_color_from_hex("#FFFFFF")
+                        on_release: app.stop()
+                        on_press: root.verificaraudio()
+                    
+                                     
+<TelaMetronomo>
+    MDScreen:
+        MDBoxLayout:
+            orientation: "vertical"
+            md_bg_color: get_color_from_hex("#B7B7B7")
+   
+            MDToolbar:
+                title: "Metrônomo"
+                md_bg_color: get_color_from_hex("#051046")
+                left_action_items: [["arrow-left", lambda _: setattr(root.manager, 'current', 'tela2')]]
+                #on_action_button: root.manager.transition.direction = "right"
+      
+
+            MDBoxLayout:
+                padding: 50
+                orientation: "vertical"
+
+                Label:
+
+                MDIcon:
+                    icon: "metronome"
+                    halign: "center"
+                    font_size: 50
+
+                TextInput:
+                    id: bpm
+                    text: "BPM"
+                    font_size: 30
+                    valign: True
+                    multiline: False
+                    halign: "center"
+
+                MDBoxLayout: 
+                    Button:
+                        text: "PLAY"
+                        background_color: get_color_from_hex("#1B28D2")
+                        on_press: root.play_metronome()
+                        bold: True
+
+                    Button
+                        text: "STOP"
+                        bold: True
+                        background_color: get_color_from_hex("#1B28D2")
+                        on_press: root.stop_metronome()
+
+                Label:
+                Label:
+                Label:
+
+<TelaConfig>
+    MDScreen:
+        MDBoxLayout:
+            orientation: "vertical"
+            md_bg_color: get_color_from_hex("#B7B7B7")
+   
+            MDToolbar:
+                title: "Configurações"
+                md_bg_color: get_color_from_hex("#051046")
+                left_action_items: [["arrow-left", lambda _: setattr(root.manager, 'current', 'tela2')]]
+
+            MDBoxLayout:
+                padding: 60
+
+                Label:
+                    text: "Modo Escuro"
+                    color: get_color_from_hex("#000000")
+                    bold: True
+
+                MDSwitch:
+                    pos_hint: {'center_x': .5, 'center_y': .5}
+
+            Label:
+            Label:
+            Label:
+                    
+
+<TelaAjuda>
+    MDScreen:
+        MDBoxLayout:
+            orientation: "vertical"
+            md_bg_color: get_color_from_hex("#B7B7B7")
+   
+            MDToolbar:
+                title: "Como usar o BPMusic"
+                md_bg_color: get_color_from_hex("#051046")
+                left_action_items: [["arrow-left", lambda _: setattr(root.manager, 'current', 'tela2')]]
+
+            BoxLayout:
+                orientation: "vertical"
+                padding: 15
+                
+                ScrollView:
+                    do_scroll_x: False
+                    do_scroll_y: True
+
+                    Label:
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        text_size: self.width, None
+                        padding: 10, 10
+                        color: [0,0,0]
+                        text:
+                            '1- Na tela inicial, insira o link (url) do vídeo que deseja extrair o áudio na caixa com a símbolo do YouTube.\n' '\n' '2- Em seguida, clique no botão AUDIO abaixo da caixa para carregar o audio na aplicação.\n' '\n' '• Assim que for carregado, o audio aparecerá no player que se encontra na tela para reprodução.\n' '\n' '3- Para a análise do áudio para descobrir seu andamento (BPM) clique no botão com o simbolo de um metrônomo. Este botão se encontrar ao lado da caixa com uma nota musical e a escrita: BPM.\n' '\n' '• Quando o audio terminar de ser analisado, o cálculo do BPM aparerá nesta caixa.\n' '\n' '4- O app possui um metrônomo para conferência e acompanhamento do BPM.\n' '\n' '• Para abrir e usar o metrônomo é necessário clicar no simbolo de metrônomo na barra superior da tela.'
+              
+<TelaSobre>
+    MDScreen:
+        MDBoxLayout:
+            orientation: "vertical"
+            md_bg_color: get_color_from_hex("#B7B7B7")
+   
+            MDToolbar:
+                title: "Sobre"
+                md_bg_color: get_color_from_hex("#051046")
+                left_action_items: [["arrow-left", lambda _: setattr(root.manager, 'current', 'tela2')]]
+
+            BoxLayout:
+                orientation: "vertical"
+                padding: 13
+
+                Label:
+                    text: "©BPMusic"
+                    color: [0,0,0]
+                    bold: True
+                
+                Label: 
+                    text: "APP elaborado para trabalho de conclusão do curso de Sistemas de Informação."
+                    size_hint: (1, None)
+                    text_size: (self.width - sp(10), None)
+                    color: [0,0,0]
+
+                Label:
+                    text: "Autores"
+                    color: [0,0,0]
+                    bold: True
+                    font_size: 17
+
+                Label:
+
+                Label:
+                    text: "Gabriel Francisco"
+                    color: [0,0,0]
+                    bold: True
+
+                Label: 
+                    text: "• Email para contato: gabriel.francisco65@yahoo.com\n \n• Linkedin: www.linkedin.com/in/gab-francisco"
+                    size_hint: (1, None)
+                    text_size: (self.width - sp(10), None)
+                    color: [0,0,0]
+
+                Label:
+
+                Label:
+                    text: "Isabele Moreira"
+                    color: [0,0,0]
+                    bold: True
+
+                Label: 
+                    text: "• Email para contato: isabele.mandrade@gmail.com\n \n• Linkedin: www.linkedin.com/in/isabelemandrade/"
+                    size_hint: (1, None)
+                    text_size: (self.width - sp(10), None)
+                    color: [0,0,0]
+
+                Label:
+                Label:
+                Label:
+
+
+
+        
+                    
+                    
+
+                    
+                
+
+            
+
+
+                        
+
+            
+
+
+
+
+        
+
+        
+
+                
+
+                
+
+        
+               
+
+
+               
+
+            
+
+
+                 
+
+            
